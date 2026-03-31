@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bild-URL Eingabe</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Bild-URL Eingabe</h1>
+            <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">☀️ Hell</button>
+        </div>
+
+        <div class="input-section">
+            <div class="input-group">
+                <input type="text" id="urlInput" placeholder="Bild-URL oder Twitter/X-Benutzername (z.B. @elonmusk)" />
+                <button class="btn btn-primary" onclick="addImage()">Hinzufügen</button>
+            </div>
+            <div id="previewContainer" class="preview-container">
+                <div class="preview-loading" id="previewLoading">
+                    <span class="spinner"></span>
+                    <span>Lade Vorschau...</span>
+                </div>
+                <div class="preview-result" id="previewResult">
+                    <img id="previewImage" src="" alt="Vorschau">
+                    <span id="previewUsername"></span>
+                </div>
+            </div>
+            <div class="actions">
+                <button class="btn btn-secondary" onclick="clearAll()">Alle löschen</button>
+            </div>
+        </div>
+
+        <div class="canvas-section">
+            <h2>Kreisansicht</h2>
+            <div id="canvasContainer">
+                <canvas id="imageCanvas" width="700" height="700"></canvas>
+            </div>
+            <div id="canvasEmpty" class="canvas-empty">Fügen Sie Bilder hinzu, um die Kreisansicht zu sehen.</div>
+            <div class="canvas-actions">
+                <div class="export-options">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" id="includeBackground" checked>
+                        Hintergrund einschließen
+                    </label>
+                </div>
+                <button class="btn btn-primary" onclick="copyCanvasToClipboard()" id="copyBtn">In Zwischenablage
+                    kopieren</button>
+                <div id="copySuccess" class="copy-success">Bild wurde in die Zwischenablage kopiert!</div>
+            </div>
+        </div>
+
+        <div id="gallery" class="gallery"></div>
+
+        <div id="emptyState" class="empty-state">
+            <p>Noch keine Bilder hinzugefügt. Geben Sie eine Bild-URL ein, um zu beginnen.</p>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
