@@ -611,7 +611,7 @@ function renderCanvas() {
     const centerRadius = 100;
     const innerCircleRadius = 70;
     const outerCircleRadius = 45;
-    const innerOrbitRadius = 190;
+    const innerOrbitRadius = 220;
     const outerOrbitRadius = 360;
 
     // Max images per ring
