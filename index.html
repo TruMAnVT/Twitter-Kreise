@@ -38,10 +38,11 @@
         <div class="canvas-section">
             <h2>Kreisansicht</h2>
             <div id="canvasContainer">
-                <canvas id="imageCanvas" width="700" height="700"></canvas>
+                <canvas id="imageCanvas" width="1000" height="1000"></canvas>
             </div>
             <div id="canvasEmpty" class="canvas-empty">Fügen Sie Bilder hinzu, um die Kreisansicht zu sehen.</div>
             <div class="canvas-actions">
+                <!--
                 <div class="export-options">
                     <label class="checkbox-wrapper">
                         <input type="checkbox" id="includeBackground" checked>
@@ -50,8 +51,12 @@
                 </div>
                 <button class="btn btn-primary" onclick="copyCanvasToClipboard()" id="copyBtn">In Zwischenablage
                     kopieren</button>
+                <button class="btn btn-secondary" onclick="showCanvasAsPng()" id="previewPngBtn">PNG anzeigen</button>
                 <div id="copySuccess" class="copy-success">Bild wurde in die Zwischenablage kopiert!</div>
+                -->
+                <div class="copy-hint">Bitte Rechtsklick auf das Bild und „Bild kopieren“ verwenden.</div>
             </div>
+            <div id="pngPreviewContainer" class="png-preview-container"></div>
         </div>
 
         <div id="gallery" class="gallery"></div>

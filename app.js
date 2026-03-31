@@ -354,9 +354,8 @@ async function copyCanvasToClipboard() {
         return;
     }
 
+    let exportCanvas = canvas;
     try {
-        let exportCanvas = canvas;
-
         if (!includeBackground) {
             exportCanvas = document.createElement('canvas');
             exportCanvas.width = canvas.width;
@@ -378,22 +377,104 @@ async function copyCanvasToClipboard() {
                 reject(e);
             }
         });
+
+        if (!navigator.clipboard || !navigator.clipboard.write) {
+            throw new Error('ClipboardAPI not supported');
+        }
+
         await navigator.clipboard.write([
             new ClipboardItem({ 'image/png': blob })
         ]);
 
-        const successMsg = document.getElementById('copySuccess');
-        successMsg.classList.add('show');
-        setTimeout(() => {
-            successMsg.classList.remove('show');
-        }, 2000);
+        showCopySuccess();
     } catch (err) {
         console.error('Fehler beim Kopieren:', err);
-        if (err.name === 'SecurityError' || err.message.includes('tainted')) {
-            alert('Kopieren fehlgeschlagen: Einige Bilder (z.B. Twitter-Profilbilder) können aus Sicherheitsgründen nicht exportiert werden.');
-        } else {
-            alert('Kopieren fehlgeschlagen. Möglicherweise wird diese Funktion von Ihrem Browser nicht unterstützt.');
+
+        if (err.name === 'SecurityError' || (err.message && err.message.toLowerCase().includes('tainted'))) {
+            alert('Kopieren fehlgeschlagen: Einige Bilder (z.B. Twitter-Profilbilder) können aus Sicherheitsgründen nicht exportiert werden. Bitte speichern Sie das Canvas manuell über Rechtsklick.');
+            return;
         }
+
+        if (!navigator.clipboard || !navigator.clipboard.write || err.name === 'NotAllowedError' || err.name === 'TypeError') {
+            // Fallback: Download the PNG file instead of clipboard copy
+            downloadCanvasAsPng(exportCanvas, 'twitter-kreis.png');
+            alert('Zwischenablage nicht verfügbar. Das Bild wurde stattdessen heruntergeladen.');
+            return;
+        }
+
+        alert('Kopieren fehlgeschlagen. Möglicherweise wird diese Funktion von Ihrem Browser nicht unterstützt.');
+    }
+}
+
+function showCanvasAsPng() {
+    const canvas = document.getElementById('imageCanvas');
+    const includeBackground = document.getElementById('includeBackground').checked;
+
+    if (images.length === 0) {
+        alert('Keine Bilder vorhanden zum Anzeigen.');
+        return;
+    }
+
+    let exportCanvas = canvas;
+    if (!includeBackground) {
+        exportCanvas = document.createElement('canvas');
+        exportCanvas.width = canvas.width;
+        exportCanvas.height = canvas.height;
+        const exportCtx = exportCanvas.getContext('2d');
+        exportCtx.drawImage(canvas, 0, 0);
+    }
+
+    try {
+        const dataUrl = exportCanvas.toDataURL('image/png');
+        displayCanvasPreview(dataUrl);
+    } catch (err) {
+        console.error('Canvas als PNG anzeigen fehlgeschlagen:', err);
+        if (err.name === 'SecurityError' || (err.message && err.message.toLowerCase().includes('tainted'))) {
+            alert('Das Canvas konnte aufgrund von CORS/Sicherheitsbeschränkungen nicht als PNG angezeigt werden. Bitte speichern Sie es manuell per Rechtsklick.');
+        } else {
+            alert('Das Canvas konnte nicht als PNG angezeigt werden. Bitte versuchen Sie es erneut.');
+        }
+    }
+}
+
+function displayCanvasPreview(dataUrl) {
+    const previewContainer = document.getElementById('pngPreviewContainer');
+    previewContainer.innerHTML = `
+        <div class="png-preview-box">
+            <h3>PNG-Vorschau</h3>
+            <img src="${dataUrl}" alt="Canvas PNG-Vorschau" style="max-width:100%; display:block; margin: 10px 0;">
+            <a class="btn btn-secondary" href="${dataUrl}" download="twitter-kreis.png">PNG herunterladen</a>
+        </div>
+    `;
+}
+
+function showCopySuccess() {
+    const successMsg = document.getElementById('copySuccess');
+    successMsg.classList.add('show');
+    setTimeout(() => {
+        successMsg.classList.remove('show');
+    }, 2000);
+}
+
+function downloadCanvasAsPng(canvas, fileName) {
+    try {
+        canvas.toBlob((blob) => {
+            if (!blob) {
+                alert('Das Bild konnte nicht erstellt werden.');
+                return;
+            }
+
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            URL.revokeObjectURL(link.href);
+        }, 'image/png');
+    } catch (e) {
+        console.error('Download-Fallback fehlgeschlagen:', e);
+        alert('Das Bild konnte nicht exportiert werden. Bitte verwenden Sie die Browser-Rechtsklick-Funktion, um das Bild manuell zu speichern.');
     }
 }
 
@@ -527,11 +608,11 @@ function renderCanvas() {
     const centerY = canvas.height / 2;
 
     // Size configuration
-    const centerRadius = 70;
-    const innerCircleRadius = 50;
-    const outerCircleRadius = 35;
-    const innerOrbitRadius = 150;
-    const outerOrbitRadius = 270;
+    const centerRadius = 100;
+    const innerCircleRadius = 70;
+    const outerCircleRadius = 45;
+    const innerOrbitRadius = 190;
+    const outerOrbitRadius = 360;
 
     // Max images per ring
     const maxInnerRing = 8;
