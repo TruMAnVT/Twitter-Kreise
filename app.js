@@ -30,6 +30,14 @@ function loadFromStorage() {
 
         if (savedImages) {
             images = JSON.parse(savedImages);
+            // Foreach image, try to get twitter handle from URL and replace with unavatar.io URL if it's a Twitter profile
+            images = images.map(img => {
+                const twitterHandle = GetTwitterHandleFromUrl(img.url);
+                if (twitterHandle) {
+                    img.url = `https://unavatar.io/twitter/${twitterHandle}`;
+                }
+                return img;
+            });
         }
         if (savedTheme !== null) {
             isDarkTheme = JSON.parse(savedTheme);
