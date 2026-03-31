@@ -181,13 +181,15 @@ function handlePreviewInput(value) {
     if (previewLoadingTimeout) clearTimeout(previewLoadingTimeout);
     if (previewImageTimeout) clearTimeout(previewImageTimeout);
 
+    let twitterHandle = GetTwitterHandleFromUrl(value);
+
     // Hide preview if empty or not a Twitter handle
-    if (!value.trim() || !isTwitterUsername(value.trim())) {
+    if (!value.trim() || (!isTwitterUsername(value.trim()) && !twitterHandle)) {
         hidePreview();
         return;
     }
 
-    const username = value.trim().replace(/^@/, '');
+    const username = twitterHandle || value.trim().replace(/^@/, '');
 
     // Show loading after 0.3 seconds
     previewLoadingTimeout = setTimeout(() => {
@@ -200,6 +202,12 @@ function handlePreviewInput(value) {
     previewImageTimeout = setTimeout(() => {
         loadPreviewImage(username);
     }, 1000);
+}
+
+function GetTwitterHandleFromUrl(value) {
+    const twitterUrlPattern = /^(https?:\/\/)?(www\.)?x\.com\/(?<username>[a-zA-Z0-9_]{1,15})\/?$/i;
+    let twitterHandle = value.trim().match(twitterUrlPattern)?.groups.username;
+    return twitterHandle;
 }
 
 function loadPreviewImage(username) {
@@ -250,6 +258,8 @@ function addImage() {
     }
 
     let url = value;
+    var twitterHandle = GetTwitterHandleFromUrl(value);
+    value = twitterHandle || value;
 
     // Check if it's a Twitter/X username (starts with @ or is a simple username without URL characters)
     if (isTwitterUsername(value)) {
