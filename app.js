@@ -1,6 +1,123 @@
 // Storage keys
 const STORAGE_KEY_IMAGES = 'imageGallery_images';
 const STORAGE_KEY_THEME = 'imageGallery_theme';
+const STORAGE_KEY_LANGUAGE = 'imageGallery_language';
+
+// Localization
+const translations = {
+    de: {
+        themeLight: '☀️ Hell',
+        themeDark: '🌙 Dunkel',
+        maxImagesReached: 'Maximale Anzahl von 30 Bildern erreicht.',
+        loadingPreview: 'Lade Vorschau...',
+        enterUrlOrUsername: 'Bitte geben Sie eine URL oder einen Twitter/X-Benutzernamen ein.',
+        enterValidUrlOrUsername: 'Bitte geben Sie eine gültige URL oder einen Twitter/X-Benutzernamen ein.',
+        confirmDeleteAll: 'Möchten Sie wirklich alle Bilder löschen?',
+        noImagesToCopy: 'Keine Bilder vorhanden zum Kopieren.',
+        copyFailedSecurity: 'Kopieren fehlgeschlagen: Einige Bilder (z.B. Twitter-Profilbilder) können aus Sicherheitsgründen nicht exportiert werden. Bitte speichern Sie das Canvas manuell über Rechtsklick.',
+        clipboardNotAvailable: 'Zwischenablage nicht verfügbar. Das Bild wurde stattdessen heruntergeladen.',
+        copyFailedUnsupported: 'Kopieren fehlgeschlagen. Möglicherweise wird diese Funktion von Ihrem Browser nicht unterstützt.',
+        noImagesToDisplay: 'Keine Bilder vorhanden zum Anzeigen.',
+        canvasDisplayFailedCors: 'Das Canvas konnte aufgrund von CORS/Sicherheitsbeschränkungen nicht als PNG angezeigt werden. Bitte speichern Sie es manuell per Rechtsklick.',
+        canvasDisplayFailed: 'Das Canvas konnte nicht als PNG angezeigt werden. Bitte versuchen Sie es erneut.',
+        pngPreview: 'PNG-Vorschau',
+        downloadPng: 'PNG herunterladen',
+        imageCopied: 'Bild wurde in die Zwischenablage kopiert!',
+        imageCreationFailed: 'Das Bild konnte nicht erstellt werden.',
+        exportFailed: 'Das Bild konnte nicht exportiert werden. Bitte verwenden Sie die Browser-Rechtsklick-Funktion, um das Bild manuell zu speichern.',
+        imageLoadError: 'Bild konnte nicht geladen werden',
+        altImage: 'Bild',
+        moveUp: 'Nach oben',
+        moveDown: 'Nach unten',
+        remove: 'Entfernen',
+        addImagesToSeeCircle: 'Fügen Sie Bilder hinzu, um die Kreisansicht zu sehen.',
+        storageLoadError: 'Fehler beim Laden aus dem Speicher:',
+        urlPlaceholder: 'Bild-URL oder Twitter/X-Benutzername (z.B. @tru_vt)',
+        addButton: 'Hinzufügen',
+        title: 'Twitter-Kreis',
+        circleView: 'Kreisansicht',
+        rightClickHint: 'Bitte Rechtsklick auf das Bild und „Bild kopieren“ verwenden.',
+        noImagesAdded: 'Noch keine Bilder hinzugefügt. Geben Sie eine Bild-URL ein, um zu beginnen.',
+        clearAll: 'Alle löschen'
+    },
+    en: {
+        themeLight: '☀️ Light',
+        themeDark: '🌙 Dark',
+        maxImagesReached: 'Maximum number of 30 images reached.',
+        loadingPreview: 'Loading preview...',
+        enterUrlOrUsername: 'Please enter a URL or Twitter/X username.',
+        enterValidUrlOrUsername: 'Please enter a valid URL or Twitter/X username.',
+        confirmDeleteAll: 'Do you really want to delete all images?',
+        noImagesToCopy: 'No images available to copy.',
+        copyFailedSecurity: 'Copy failed: Some images (e.g., Twitter profile pictures) cannot be exported for security reasons. Please save the canvas manually using a right-click.',
+        clipboardNotAvailable: 'Clipboard not available. The image was downloaded instead.',
+        copyFailedUnsupported: 'Copy failed. This feature may not be supported by your browser.',
+        noImagesToDisplay: 'No images available to display.',
+        canvasDisplayFailedCors: 'The canvas could not be displayed as a PNG due to CORS/security restrictions. Please save it manually using a right-click.',
+        canvasDisplayFailed: 'The canvas could not be displayed as a PNG. Please try again.',
+        pngPreview: 'PNG-Preview',
+        downloadPng: 'Download PNG',
+        imageCopied: 'Image copied to clipboard!',
+        imageCreationFailed: 'Failed to create image.',
+        exportFailed: 'Failed to export image. Please use the browser\'s right-click function to save the image manually.',
+        imageLoadError: 'Failed to load image.',
+        altImage: 'Image',
+        moveUp: 'Move Up',
+        moveDown: 'Move Down',
+        remove: 'Remove',
+        addImagesToSeeCircle: 'Add images to see the circle view.',
+        storageLoadError: 'Error loading from storage:',
+        urlPlaceholder: 'Image URL or Twitter/X username (e.g., @tru_vt)',
+        addButton: 'Add',
+        title: 'Twitter Circle',
+        circleView: 'Circle View',
+        rightClickHint: 'Please right-click on the image and select "Copy Image".',
+        noImagesAdded: 'No images added yet. Please enter an image URL to get started.',
+        clearAll: 'Clear All'
+    }
+    // Add other languages here, e.g., en: { ... }
+};
+
+let currentLanguage = 'de'; // Default to German, can be made dynamic
+
+function t(key) {
+    return translations[currentLanguage][key] || key;
+}
+
+// Detect browser language
+function detectBrowserLanguage() {
+    const browserLang = navigator.language || navigator.userLanguage;
+    return browserLang && browserLang.startsWith('de') ? 'de' : 'en';
+}
+
+// Localize HTML elements
+function localizeHTML() {
+    // Update elements with data-i18n
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (key) {
+            el.textContent = t(key);
+        }
+    });
+
+    // Update placeholders
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        if (key) {
+            el.placeholder = t(key);
+        }
+    });
+
+    // Update title
+    document.title = t('title');
+
+    // Update lang attribute
+    document.documentElement.lang = currentLanguage;
+
+    // Update language button
+    const langBtn = document.getElementById('langBtn');
+    langBtn.textContent = currentLanguage === 'de' ? '🇬🇧 EN' : '🇩🇪 DE';
+}
 
 // State
 let images = [];
@@ -13,6 +130,7 @@ let previewImageTimeout = null;
 function init() {
     loadFromStorage();
     applyTheme();
+    localizeHTML();
     setupEventListeners();
     renderGallery();
 }
@@ -21,12 +139,14 @@ function init() {
 function saveToStorage() {
     localStorage.setItem(STORAGE_KEY_IMAGES, JSON.stringify(images));
     localStorage.setItem(STORAGE_KEY_THEME, JSON.stringify(isDarkTheme));
+    localStorage.setItem(STORAGE_KEY_LANGUAGE, JSON.stringify(currentLanguage));
 }
 
 function loadFromStorage() {
     try {
         const savedImages = localStorage.getItem(STORAGE_KEY_IMAGES);
         const savedTheme = localStorage.getItem(STORAGE_KEY_THEME);
+        const savedLanguage = localStorage.getItem(STORAGE_KEY_LANGUAGE);
 
         if (savedImages) {
             images = JSON.parse(savedImages);
@@ -42,16 +162,23 @@ function loadFromStorage() {
         if (savedTheme !== null) {
             isDarkTheme = JSON.parse(savedTheme);
         }
+        if (savedLanguage !== null) {
+            currentLanguage = JSON.parse(savedLanguage);
+        } else {
+            // No saved language, detect from browser
+            currentLanguage = detectBrowserLanguage();
+        }
     } catch (e) {
-        console.error('Fehler beim Laden aus dem Speicher:', e);
+        console.error(t('storageLoadError'), e);
         images = [];
         isDarkTheme = true;
+        currentLanguage = detectBrowserLanguage();
     }
 }
 
 function applyTheme() {
     document.body.classList.toggle('light-theme', !isDarkTheme);
-    document.getElementById('themeBtn').textContent = isDarkTheme ? '☀️ Hell' : '🌙 Dunkel';
+    document.getElementById('themeBtn').textContent = isDarkTheme ? t('themeLight') : t('themeDark');
 }
 
 function setupEventListeners() {
@@ -148,7 +275,7 @@ function handleDrop(e) {
 
 function addImageUrl(url) {
     if (images.length >= 30) {
-        alert('Maximale Anzahl von 30 Bildern erreicht.');
+        alert(t('maxImagesReached'));
         return;
     }
 
@@ -163,6 +290,15 @@ function toggleTheme() {
     applyTheme();
     saveToStorage();
     renderCanvas();
+}
+
+function toggleLanguage() {
+    currentLanguage = currentLanguage === 'de' ? 'en' : 'de';
+    localizeHTML();
+    applyTheme(); // To update button text
+    renderGallery();
+    renderCanvas();
+    saveToStorage();
 }
 
 function getThemeColors() {
@@ -261,7 +397,7 @@ function addImage() {
     let value = input.value.trim();
 
     if (!value) {
-        alert('Bitte geben Sie eine URL oder einen Twitter/X-Benutzernamen ein.');
+        alert(t('enterUrlOrUsername'));
         return;
     }
 
@@ -274,14 +410,14 @@ function addImage() {
         const username = value.replace(/^@/, '');
         url = `https://unavatar.io/twitter/${username}`;
     } else if (!isValidUrl(value)) {
-        alert('Bitte geben Sie eine gültige URL oder einen Twitter/X-Benutzernamen ein.');
+        alert(t('enterValidUrlOrUsername'));
         return;
     }
 
     images.push({ url, id: Date.now() });
     if (images.length > 30) {
         images = images.slice(0, 30);
-        alert('Maximale Anzahl von 30 Bildern erreicht.');
+        alert(t('maxImagesReached'));
     }
     input.value = '';
 
@@ -355,7 +491,7 @@ function removeImage(id) {
 
 function clearAll() {
     if (images.length === 0) return;
-    if (confirm('Möchten Sie wirklich alle Bilder löschen?')) {
+    if (confirm(t('confirmDeleteAll'))) {
         images = [];
         saveToStorage();
         renderGallery();
@@ -368,7 +504,7 @@ async function copyCanvasToClipboard() {
     const includeBackground = document.getElementById('includeBackground').checked;
 
     if (images.length === 0) {
-        alert('Keine Bilder vorhanden zum Kopieren.');
+        alert(t('noImagesToCopy'));
         return;
     }
 
@@ -409,18 +545,18 @@ async function copyCanvasToClipboard() {
         console.error('Fehler beim Kopieren:', err);
 
         if (err.name === 'SecurityError' || (err.message && err.message.toLowerCase().includes('tainted'))) {
-            alert('Kopieren fehlgeschlagen: Einige Bilder (z.B. Twitter-Profilbilder) können aus Sicherheitsgründen nicht exportiert werden. Bitte speichern Sie das Canvas manuell über Rechtsklick.');
+            alert(t('copyFailedSecurity'));
             return;
         }
 
         if (!navigator.clipboard || !navigator.clipboard.write || err.name === 'NotAllowedError' || err.name === 'TypeError') {
             // Fallback: Download the PNG file instead of clipboard copy
             downloadCanvasAsPng(exportCanvas, 'twitter-kreis.png');
-            alert('Zwischenablage nicht verfügbar. Das Bild wurde stattdessen heruntergeladen.');
+            alert(t('clipboardNotAvailable'));
             return;
         }
 
-        alert('Kopieren fehlgeschlagen. Möglicherweise wird diese Funktion von Ihrem Browser nicht unterstützt.');
+        alert(t('copyFailedUnsupported'));
     }
 }
 
@@ -429,7 +565,7 @@ function showCanvasAsPng() {
     const includeBackground = document.getElementById('includeBackground').checked;
 
     if (images.length === 0) {
-        alert('Keine Bilder vorhanden zum Anzeigen.');
+        alert(t('noImagesToDisplay'));
         return;
     }
 
@@ -448,9 +584,9 @@ function showCanvasAsPng() {
     } catch (err) {
         console.error('Canvas als PNG anzeigen fehlgeschlagen:', err);
         if (err.name === 'SecurityError' || (err.message && err.message.toLowerCase().includes('tainted'))) {
-            alert('Das Canvas konnte aufgrund von CORS/Sicherheitsbeschränkungen nicht als PNG angezeigt werden. Bitte speichern Sie es manuell per Rechtsklick.');
+            alert(t('canvasDisplayFailedCors'));
         } else {
-            alert('Das Canvas konnte nicht als PNG angezeigt werden. Bitte versuchen Sie es erneut.');
+            alert(t('canvasDisplayFailed'));
         }
     }
 }
@@ -459,15 +595,16 @@ function displayCanvasPreview(dataUrl) {
     const previewContainer = document.getElementById('pngPreviewContainer');
     previewContainer.innerHTML = `
         <div class="png-preview-box">
-            <h3>PNG-Vorschau</h3>
+            <h3>${t('pngPreview')}</h3>
             <img src="${dataUrl}" alt="Canvas PNG-Vorschau" style="max-width:100%; display:block; margin: 10px 0;">
-            <a class="btn btn-secondary" href="${dataUrl}" download="twitter-kreis.png">PNG herunterladen</a>
+            <a class="btn btn-secondary" href="${dataUrl}" download="twitter-kreis.png">${t('downloadPng')}</a>
         </div>
     `;
 }
 
 function showCopySuccess() {
     const successMsg = document.getElementById('copySuccess');
+    successMsg.textContent = t('imageCopied');
     successMsg.classList.add('show');
     setTimeout(() => {
         successMsg.classList.remove('show');
@@ -521,12 +658,12 @@ function renderGallery() {
             <div class="image-item" data-id="${img.id}" data-index="${index}" draggable="true">
                 <span class="drag-handle">☰</span>
                 <span class="item-number">${index + 1}</span>
-                <img class="item-thumbnail" src="${img.url}" alt="Bild" onerror="this.style.display='none'">
+                <img class="item-thumbnail" src="${img.url}" alt="${t('altImage')}" onerror="this.style.display='none'">
                 <span class="item-url" title="${img.url}">${img.url}</span>
                 <div class="item-actions">
-                    <button class="btn-move" onclick="moveImage(${index}, -1)" ${index === 0 ? 'disabled' : ''} title="Nach oben">▲</button>
-                    <button class="btn-move" onclick="moveImage(${index}, 1)" ${index === images.length - 1 ? 'disabled' : ''} title="Nach unten">▼</button>
-                    <button class="btn-remove" onclick="removeImage(${img.id})" title="Entfernen">✕</button>
+                    <button class="btn-move" onclick="moveImage(${index}, -1)" ${index === 0 ? 'disabled' : ''} title="${t('moveUp')}">▲</button>
+                    <button class="btn-move" onclick="moveImage(${index}, 1)" ${index === images.length - 1 ? 'disabled' : ''} title="${t('moveDown')}">▼</button>
+                    <button class="btn-remove" onclick="removeImage(${img.id})" title="${t('remove')}">✕</button>
                 </div>
             </div>
         `).join('');

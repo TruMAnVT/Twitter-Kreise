@@ -76,12 +76,18 @@ body.drag-over::after {
     margin-bottom: 30px;
 }
 
+.header-controls {
+    display: flex;
+    gap: 10px;
+}
+
 h1 {
     color: var(--accent-color);
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.theme-toggle {
+.theme-toggle,
+.language-toggle {
     padding: 10px 20px;
     border: 2px solid var(--accent-color);
     border-radius: 10px;
@@ -92,7 +98,8 @@ h1 {
     transition: all 0.3s;
 }
 
-.theme-toggle:hover {
+.theme-toggle:hover,
+.language-toggle:hover {
     background: var(--accent-color);
     color: white;
 }
